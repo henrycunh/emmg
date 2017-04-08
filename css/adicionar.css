@@ -1,0 +1,7 @@
+.wrapper{
+  clear: both;
+}
+
+input, select{
+  display: block;
+}
