@@ -1,67 +1,45 @@
 <?php
   require 'incl/header.php';
   require 'incl/classes/aluno.php';
-  if(!empty($_POST)){
-    $dados = $_POST;
-    $ext = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
-    $filename = 'fotos/' . $dados['id'] . ".$ext";
-    $aluno = Aluno::createAluno(
-      $dados['id'],
-      $dados['nome'],
-      $dados['dataNasc'],
-      $dados['sexo'],
-      $dados['responsavel_1'],
-      $dados['responsavel_2'],
-      $dados['telefone'],
-      $dados['endereco'],
-      ($dados['bolsaFamilia'] === 'on' ? 1 : 0),
-      $dados['serie'],
-      $dados['turma'],
-      $dados['turno'],
-      $filename,
-      $dados['anoLetivo']
-    );
-    $query = $aluno->insertIntoDB($conn);
-    move_uploaded_file($_FILES['foto']['tmp_name'], $filename);
-    if($query['success']) {
-      echo '<div class="success">Aluno cadastrado com sucesso.</div>';
-    } else {
-      echo '<div class="erro">Erro ao cadastrar aluno.<br>' . $query['message'] . '</div>';
-    }
-
+  $get = !empty($_GET);
+  $aluno = '';
+  if($get){
+    $aluno = Aluno::getById($conn, $_GET['id']);
+  } else {
+    die("Página não encontrada.");
   }
-
  ?>
+
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Adicionar Aluno</title>
-    <link rel="stylesheet" href="css/adicionar.css">
+    <title>Ver Aluno / <?= $aluno['nome'] ?></title>
+    <link rel="stylesheet" href="css/veraluno.css">
   </head>
   <body>
     <div class="wrapper">
     <form action="adicionarAluno.php" enctype='multipart/form-data' method="post">
         <label for="nome">Nome Completo</label>
-        <input type="text" name="nome" required>
+        <input type="text" name="nome" value='<?= $aluno['nome'] ?>' required>
 
         <label for="id">ID</label>
-        <input type="text" name="id" required>
+        <input type="text" name="id" value='<?= $aluno['id'] ?>' required>
 
         <label for="dataNasc">Data Nascimento</label>
-        <input type="date" name="dataNasc" required>
+        <input type="date" name="dataNasc" value='<?= $aluno['dataNasc'] ?>' required>
 
         <label for="sexo">Sexo</label>
-        <select name='sexo' required>
+        <select name='sexo' value='<?= $aluno['sexo'] ?>' required>
           <option value="M">Masculino</option>
           <option value="F">Feminino</option>
         </select>
 
         <label for="turma">Turma</label>
-        <input type="text" name="turma" required>
+        <input type="text" name="turma" value='<?= $aluno['turma'] ?>' required>
 
         <label for="serie">Serie</label>
-        <select name='serie' required>
+        <select name='serie' value='<?= $aluno['serie'] ?>' required>
           <option value="1anofund">1º Ano Fundamental</option>
           <option value="2anofund">2º Ano Fundamental</option>
           <option value="3anofund">3º Ano Fundamental</option>
@@ -77,35 +55,35 @@
         </select>
 
         <label for="turno">Turno</label>
-        <select name='turno' required>
+        <select name='turno' value='<?= $aluno['turno'] ?>' required>
           <option value="Manhã">Matutino</option>
           <option value="Tarde">Vespertino</option>
         </select>
 
         <label for="anoLetivo">Ano Letivo</label>
-        <input type="text" name="anoLetivo" required>
+        <input type="text" name="anoLetivo" value='<?= $aluno['anoLetivo'] ?>' required>
 
         <label for="responsavel_1">Nome do Responsável (1)</label>
-        <input type="text" name="responsavel_1" required>
+        <input type="text" name="responsavel_1" value='<?= $aluno['responsavel_1'] ?>' required>
 
         <label for="responsavel_2">Nome do Responsável (2)</label>
-        <input type="text" name="responsavel_2" required>
+        <input type="text" name="responsavel_2" value='<?= $aluno['responsavel_2'] ?>' required>
 
         <label for="bolsaFamilia">Bolsa Familia</label>
-        <select name='bolsaFamilia' required>
+        <select name='bolsaFamilia' value='<?= $aluno['bolsaFamilia'] ?>' required>
           <option value="on">Sim</option>
           <option value="off">Não</option>
         </select>
 
         <label for="telefone">Telefone</label>
-        <input type="text" name="telefone" required>
+        <input type="text" name="telefone" value='<?= $aluno['telefone'] ?>' required>
 
         <label for="endereco">Endereco</label>
-        <textarea name='endereco' required></textarea>
+        <textarea name='endereco' required><?= $aluno['endereco'] ?></textarea>
 
         <label style='float:left; width: 400px' for="foto">Foto</label>
         <input type="file" id='foto' name="foto" accept='image/*' required>
-        <img src="#" id='preview' alt="Pré-visualização">
+        <img src="<?= $aluno['foto'] ?>" id="preview" alt="">
 
         <input type="submit" value="Adicionar Aluno">
 
@@ -129,7 +107,6 @@
     }
 
     $("#foto").change(()=>{
-      $("#preview").fadeIn(300)
       preview($("#foto"))
     })
   </script>

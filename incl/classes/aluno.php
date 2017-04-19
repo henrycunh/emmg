@@ -32,23 +32,25 @@
       $this->anoLetivo = '';
     }
 
-    public function static createAluno(
+    public static function createAluno(
       $nome, $id, $dataNasc, $sexo, $responsavel_1, $responsavel_2, $telefone,
       $endereco, $bolsaFamilia, $serie, $turma, $turno, $foto, $anoLetivo){
-        $this->nome = $nome;
-        $this->id = $id;
-        $this->dataNasc = $dataNasc;
-        $this->sexo = $sexo;
-        $this->responsavel_1 = $responsavel_1;
-        $this->responsavel_2 = $responsavel_2;
-        $this->telefone = $telefone;
-        $this->endereco = $endereco;
-        $this->bolsaFamilia = $bolsaFamilia;
-        $this->serie = $serie;
-        $this->turma = $turma;
-        $this->turno = $turno;
-        $this->foto = $foto;
-        $this->anoLetivo = $anoLetivo;
+        $aluno = new self();
+        $aluno->nome = $nome;
+        $aluno->id = $id;
+        $aluno->dataNasc = $dataNasc;
+        $aluno->sexo = $sexo;
+        $aluno->responsavel_1 = $responsavel_1;
+        $aluno->responsavel_2 = $responsavel_2;
+        $aluno->telefone = $telefone;
+        $aluno->endereco = $endereco;
+        $aluno->bolsaFamilia = $bolsaFamilia;
+        $aluno->serie = $serie;
+        $aluno->turma = $turma;
+        $aluno->turno = $turno;
+        $aluno->foto = $foto;
+        $aluno->anoLetivo = $anoLetivo;
+        return $aluno;
     }
 
     public function insertIntoDB($conn){
@@ -58,25 +60,43 @@
         :serie, :turma, :turno, :foto, :anoLetivo)";
       $stmt = $conn->prepare($sqlQuery);
       // Bidding params
-      $stmt->bindParam(':nome',$nome);
-      $stmt->bindParam(':id',$id);
-      $stmt->bindParam(':dataNasc',$dataNasc);
-      $stmt->bindParam(':sexo',$sexo);
-      $stmt->bindParam(':responsavel_1',$responsavel_1);
-      $stmt->bindParam(':responsavel_2',$responsavel_2);
-      $stmt->bindParam(':telefone',$telefone);
-      $stmt->bindParam(':endereco',$endereco);
-      $stmt->bindParam(':bolsaFamilia',$bolsaFamilia);
-      $stmt->bindParam(':serie',$serie);
-      $stmt->bindParam(':turma',$turma);
-      $stmt->bindParam(':turno',$turno);
-      $stmt->bindParam(':foto',$foto);
-      $stmt->bindParam(':anoLetivo',$anoLetivo);
+      $stmt->bindParam(':nome',$this->nome);
+      $stmt->bindParam(':id',$this->id);
+      $stmt->bindParam(':dataNasc',$this->dataNasc);
+      $stmt->bindParam(':sexo',$this->sexo);
+      $stmt->bindParam(':responsavel_1',$this->responsavel_1);
+      $stmt->bindParam(':responsavel_2',$this->responsavel_2);
+      $stmt->bindParam(':telefone',$this->telefone);
+      $stmt->bindParam(':endereco',$this->endereco);
+      $stmt->bindParam(':bolsaFamilia',$this->bolsaFamilia);
+      $stmt->bindParam(':serie',$this->serie);
+      $stmt->bindParam(':turma',$this->turma);
+      $stmt->bindParam(':turno',$this->turno);
+      $stmt->bindParam(':foto',$this->foto);
+      $stmt->bindParam(':anoLetivo',$this->anoLetivo);
       // executing stmt
-      $stmt->execute();
+      $query = $stmt->execute();
+      if(!$query){
+        return ['success' => false, 'message' => $stmt->errorInfo()[2]];
+      } else {
+        return ['success' => true];
+      }
     }
 
+    public static function getAllAlunos($conn){
+        $res = $conn->query("SELECT * FROM aluno")->fetchAll(PDO::FETCH_ASSOC);
+        return $res;
+    }
 
+    public static function getById($conn, $id){
+        $res = $conn->query("SELECT * FROM aluno WHERE id='$id'")->fetch(PDO::FETCH_ASSOC);
+        return $res;
+    }
+
+    public static function getByName($conn, $name){
+      $res = $conn->query("SELECT * FROM aluno WHERE UPPER(nome) LIKE UPPER('%" . $name . "%')")->fetchAll(PDO::FETCH_ASSOC);
+      return $res;
+    }
 
 
 

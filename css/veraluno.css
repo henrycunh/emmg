@@ -54,8 +54,8 @@ label[for='foto'], input[type='reset'], input[type='submit']{
   display: inline-block;
   text-align: center;
 }
+
 img#preview {
-  display: none;
     width: 400px;
     margin-top: -15px;
     margin-bottom: 10px;

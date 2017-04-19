@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,500,700,900');
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900');
 
 *{
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 400;
 }
 
@@ -42,7 +42,8 @@ nav a:hover{
   background: transparent;
   border: 0;
   outline: none;
-  padding-bottom: 0.5em;
+  padding-bottom: 0.25em;
+  padding-left: 0.5em;
   border-bottom: 2px solid #bbb;
   transition: 1s border-color;
   font-size: 12pt;
