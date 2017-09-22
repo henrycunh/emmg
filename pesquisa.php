@@ -1,4 +1,6 @@
-<?php $index = 1; require 'incl/header.php'; require 'incl/classes/aluno.php'; 
+<?php
+  require 'incl/header.php';
+  require 'incl/classes/aluno.php';
   $series = array(
     "1anofund" => "1º Ano Fundamental",
     "2anofund" => "2º Ano Fundamental",
@@ -13,18 +15,23 @@
     "2anomed" => "2º Ano Médio",
     "3anomed" => "3º Ano Médio"
   );
-?>
+ ?>
+
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Controle de Alunos</title>
+
     <link rel="stylesheet" href="css/semantic.min.css">
     <link rel="stylesheet" href="css/icon.min.css">
+    <title>Pesquisa</title>
   </head>
-
   <body>
-    <table class="ui celled selectable table">
+  <?php if(!empty($_GET)){
+        $query = $_GET['query'];
+        $alunos = Aluno::search($conn, $query);
+        if($alunos):?>
+  <table class='ui celled selectable table'>
     <thead>
       <tr>
         <th>ID</th>
@@ -33,24 +40,27 @@
         <th>Turma</th>
         <th>Turno</th>
         <th></th>
-      </tr>
+      </tr>  
     </thead>
     <tbody>
-  <?php $alunos = Aluno::getAllAlunos($conn); foreach ($alunos as $aluno):?>
-      <tr class='inforow' aluno-id='<?= $aluno['id'] ?>'>
-        <td class='collapsing'><?= $aluno['id'] ?></td>
-        <td><img class='ui avatar image mini' src='<?= $aluno['foto'] ?>'> <?= $aluno['nome'] ?> </td>
-        <td class='collapsing'><?= $series[$aluno['serie']] ?></td>
-        <td class='collapsing'><?= $aluno['turma'] ?></td>
-        <td class='collapsing'><?= $aluno['turno'] ?></td>
-        <td class='collapsing'><a class='ui button primary' href="verAluno.php?id=<?= $aluno['id'] ?>">Ver Aluno</a></td>
-      </tr>
-  <?php endforeach; ?>
+       <?php foreach($alunos as $aluno):?>
+
+        <tr class='inforow' aluno-id='<?= $aluno['id'] ?>'>
+          <td class='collapsing'><?= $aluno['id'] ?></td>
+          <td><img class='ui avatar image mini' src='<?= $aluno['foto'] ?>'> <?= $aluno['nome'] ?></td>
+          <td class='collapsing'><?= $series[$aluno['serie']] ?></td>
+          <td class='collapsing'><?= $aluno['turma'] ?></td>
+          <td class='collapsing'><?= $aluno['turno'] ?></td>
+          <td class='collapsing'><a class='ui button primary' href="verAluno.php?id=<?= $aluno['id'] ?>">Ver Aluno</a></td>
+        </tr>
+
+      <?php endforeach; else:?>
+        <div class="ui message">Nenhum aluno foi encontrado com os termos dados.</div>
+      <?php endif; } ?>
     </tbody>
+  </table>
 
-    </table>
-
-    <div class="ui dimmer" id='aluno-modal'>
+  <div class="ui dimmer" id='aluno-modal'>
     <div class="content">
       <div class="center">
         <div class="ui card" style=' margin: 0 auto;text-align: left'>
@@ -77,6 +87,7 @@
         </div>
     </div>
   </div>
+
   </body>
   <script>
     $(()=>

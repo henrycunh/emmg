@@ -1,6 +1,6 @@
 <?php
   $user = 'root';
-  $pw = '2811';
+  $pw = '';
   $host = 'localhost';
   $db = 'emmg';
 
